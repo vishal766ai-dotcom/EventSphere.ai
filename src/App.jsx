@@ -10,6 +10,10 @@ import CrowdGiftingPool from './components/CrowdGiftingPool';
 import OpsDeskDashboard from './components/OpsDeskDashboard';
 import GuestAssistantBot from './components/GuestAssistantBot';
 import ApiKeyModal from './components/ApiKeyModal';
+import OffersVouchersBanner from './components/OffersVouchersBanner';
+import GuestGiftingHub from './components/GuestGiftingHub';
+import EventTimelineManager from './components/EventTimelineManager';
+import EntertainmentSpatialGuide from './components/EntertainmentSpatialGuide';
 import { api } from './services/api';
 import { MessageSquare, X, ShieldCheck, Sparkles, Heart } from 'lucide-react';
 
@@ -73,6 +77,13 @@ export default function App() {
           dispatchData={dispatchData}
         />
 
+        {/* Offers & Vouchers Interactive Bar */}
+        <OffersVouchersBanner
+          onApplyCode={(code) => {
+            alert(`🎉 Coupon ${code} copied and applied to your booking!`);
+          }}
+        />
+
         {/* Tab Content Renderer */}
         <div className="mt-8 transition-all">
           {activeTab === 'express' && (
@@ -107,6 +118,22 @@ export default function App() {
 
           {activeTab === 'crowd-pool' && (
             <CrowdGiftingPool />
+          )}
+
+          {activeTab === 'gifts' && (
+            <GuestGiftingHub 
+              onBookGifts={() => setActiveTab('express')}
+            />
+          )}
+
+          {activeTab === 'timeline' && (
+            <EventTimelineManager />
+          )}
+
+          {activeTab === 'entertainment' && (
+            <EntertainmentSpatialGuide 
+              onSelectAct={() => setActiveTab('express')}
+            />
           )}
 
           {activeTab === 'ops-escrow' && (

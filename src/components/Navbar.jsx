@@ -11,7 +11,9 @@ import {
   ShieldCheck, 
   KeyRound, 
   Clock, 
-  ChevronDown 
+  ChevronDown,
+  Gift,
+  Music 
 } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, currentPin, setCurrentPin, onOpenApiKeyModal, isAiActive }) {
@@ -31,6 +33,9 @@ export default function Navbar({ activeTab, setActiveTab, currentPin, setCurrent
     { id: 'visualizer', label: 'Living Room Fit', icon: Sliders, badge: 'AI AR' },
     { id: 'control-room', label: 'Live Control Room', icon: Tv, badge: 'Day-of GPS' },
     { id: 'crowd-pool', label: 'Crowd-Gifting Pool', icon: Users, badge: 'UPI Split' },
+    { id: 'gifts', label: 'Guest Return Gifts', icon: Gift, badge: 'All Ages' },
+    { id: 'timeline', label: 'Event Schedule', icon: Clock, badge: 'Run of Show' },
+    { id: 'entertainment', label: 'Entertainment & Layout', icon: Music, badge: 'Spatial Plan' },
     { id: 'ops-escrow', label: 'Escrow & Ops Desk', icon: ShieldCheck, badge: 'Verified' },
   ];
 

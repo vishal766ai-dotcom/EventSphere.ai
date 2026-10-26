@@ -16,6 +16,10 @@ import crowdPoolRouter from './routes/crowdPool.js';
 import guestBotRouter from './routes/guestBot.js';
 import decorVisualizerRouter from './routes/decorVisualizer.js';
 import sopsRouter from './routes/sops.js';
+import giftingRouter from './routes/gifting.js';
+import entertainmentRouter from './routes/entertainment.js';
+import offersRouter from './routes/offers.js';
+import timelineRouter from './routes/timeline.js';
 
 dotenv.config();
 
@@ -52,6 +56,10 @@ app.use('/api/crowd-pool', crowdPoolRouter);
 app.use('/api/guest-bot', guestBotRouter);
 app.use('/api/decor-visualizer', decorVisualizerRouter);
 app.use('/api/sops', sopsRouter);
+app.use('/api/gifting', giftingRouter);
+app.use('/api/entertainment', entertainmentRouter);
+app.use('/api/offers', offersRouter);
+app.use('/api/timeline', timelineRouter);
 
 // Serve static frontend files if built
 const distPath = path.resolve(__dirname, '../dist');
@@ -80,15 +88,11 @@ app.get('*', (req, res) => {
   });
 });
 
-const isMain = process.argv[1] && (process.argv[1].endsWith('server\\index.js') || process.argv[1].endsWith('server/index.js'));
-let serverInstance = null;
-
-if (isMain) {
-  serverInstance = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 EventSphere Server listening on port ${PORT}`);
-    console.log(`📡 Health Check: http://localhost:${PORT}/health`);
-  });
-}
+const serverInstance = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 EventSphere Server listening on port ${PORT}`);
+  console.log(`📡 Health Check: http://localhost:${PORT}/health`);
+  console.log(`🌐 Local Web App: http://localhost:${PORT}`);
+});
 
 export { serverInstance };
 export default app;

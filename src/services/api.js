@@ -163,5 +163,56 @@ export const api = {
   async getGeminiStatus() {
     const res = await fetch(`${API_BASE}/gemini/status`);
     return res.json();
+  },
+
+  // Guest Gifting & Return Favors
+  async getGiftingCatalog() {
+    const res = await fetch(`${API_BASE}/gifting`);
+    return res.json();
+  },
+
+  async estimateGifting(payload) {
+    const res = await fetch(`${API_BASE}/gifting/estimate`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(payload)
+    });
+    return res.json();
+  },
+
+  // Entertainment & Spatial Placement
+  async getEntertainmentAndSpatial() {
+    const res = await fetch(`${API_BASE}/entertainment`);
+    return res.json();
+  },
+
+  // Offers & Vouchers
+  async getOffers() {
+    const res = await fetch(`${API_BASE}/offers`);
+    return res.json();
+  },
+
+  async applyOffer(code, orderAmount) {
+    const res = await fetch(`${API_BASE}/offers/apply`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ code, orderAmount })
+    });
+    return res.json();
+  },
+
+  // Event Time Management & Run of Show
+  async getTimeline() {
+    const res = await fetch(`${API_BASE}/timeline`);
+    return res.json();
+  },
+
+  async updateTimelineStatus(index, status) {
+    const res = await fetch(`${API_BASE}/timeline/update-status`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ index, status })
+    });
+    return res.json();
   }
 };

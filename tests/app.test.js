@@ -1,19 +1,16 @@
 // Automated integration test for EventSphere backend endpoints
-process.env.NODE_ENV = 'test';
-import http from 'http';
-import app from '../server/index.js';
+import { serverInstance } from '../server/index.js';
 
-const TEST_PORT = 5098;
-const server = http.createServer(app);
+const PORT = process.env.PORT || 5000;
 
-server.listen(TEST_PORT, '127.0.0.1', async () => {
-  console.log(`🧪 Running automated tests on http://127.0.0.1:${TEST_PORT}...`);
+async function runTests() {
+  console.log(`🧪 Running automated tests on http://127.0.0.1:${PORT}...`);
   let passed = 0;
   let failed = 0;
 
   async function testEndpoint(name, path, options = {}) {
     try {
-      const res = await fetch(`http://127.0.0.1:${TEST_PORT}${path}`, options);
+      const res = await fetch(`http://127.0.0.1:${PORT}${path}`, options);
       if (!res.ok) {
         throw new Error(`HTTP status ${res.status}: ${res.statusText}`);
       }
@@ -106,6 +103,11 @@ server.listen(TEST_PORT, '127.0.0.1', async () => {
     console.log(`=============================\n`);
 
     process.exitCode = failed > 0 ? 1 : 0;
-    server.close();
+    if (serverInstance) {
+      serverInstance.close();
+    }
   }
-});
+}
+
+// Give server 100ms to bind if needed
+setTimeout(runTests, 100);
