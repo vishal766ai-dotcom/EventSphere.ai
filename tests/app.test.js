@@ -105,8 +105,7 @@ server.listen(TEST_PORT, '127.0.0.1', async () => {
     console.log(`📊 Test Summary: ${passed} PASSED, ${failed} FAILED`);
     console.log(`=============================\n`);
 
-    server.close(() => {
-      process.exit(failed > 0 ? 1 : 0);
-    });
+    process.exitCode = failed > 0 ? 1 : 0;
+    server.close();
   }
 });

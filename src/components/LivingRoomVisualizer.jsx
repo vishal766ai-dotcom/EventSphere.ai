@@ -164,6 +164,28 @@ export default function LivingRoomVisualizer({ onSelectTheme }) {
           ctx.textAlign = 'left';
           ctx.fillText(`✓ FREESTANDING METAL FRAME`, x + 16, y + baseH - 14);
         };
+        decorImg.onerror = () => {
+          // Graceful fallback to architectural blueprint vector if network image delayed
+          const baseW = 340 * scale;
+          const baseH = 240 * scale;
+          const x = (canvas.width - baseW) / 2 + posX;
+          const y = (canvas.height - baseH) / 2 + posY + 20;
+
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+          ctx.roundRect(x, y, baseW, baseH, 12);
+          ctx.fill();
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(x, y, baseW, baseH);
+
+          ctx.fillStyle = '#38bdf8';
+          ctx.font = 'bold 14px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(`📐 ${activePkg.title}`, x + baseW/2, y + baseH/2 - 10);
+          ctx.font = '11px sans-serif';
+          ctx.fillStyle = '#94a3b8';
+          ctx.fillText(`${activePkg.blueprint?.width} x ${activePkg.blueprint?.height} (Freestanding Metal Frame)`, x + baseW/2, y + baseH/2 + 15);
+        };
       }
     };
   };

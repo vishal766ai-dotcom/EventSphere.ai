@@ -16,18 +16,35 @@ router.post('/calculate', async (req, res) => {
   const dessertBudget = Math.round(budget * 0.15);
   const logisticsBudget = Math.round(budget * 0.15);
 
-  // Per plate budget
-  const perPlateBudget = Math.round(cateringBudget / Math.max(guests, 1));
+  // Find suitable decor package under decorBudget (or lowest available base price)
+  const sortedPackages = [...packagesData].sort((a, b) => a.basePrice - b.basePrice);
+  const matchedDecor = packagesData.find(p => p.basePrice <= decorBudget) || sortedPackages[0];
 
-  // Find suitable decor package under decorBudget (or closest best fit)
-  const matchedDecor = packagesData.find(p => p.basePrice <= decorBudget * 1.25) || packagesData[0];
+  // Dynamically balance if base package leaves different remainder
+  const decorActualCost = Math.min(matchedDecor.basePrice, decorBudget);
+  const remainingBudget = Math.max(0, budget - matchedDecor.basePrice);
+
+  let actualCatering = cateringBudget;
+  let actualDessert = dessertBudget;
+  let actualLogistics = logisticsBudget;
+
+  if (matchedDecor.basePrice + cateringBudget + dessertBudget + logisticsBudget > budget) {
+    // Rebalance remainder proportionately: 60% Catering, 20% Dessert, 20% Logistics
+    actualCatering = Math.floor(remainingBudget * 0.60);
+    actualDessert = Math.floor(remainingBudget * 0.20);
+    actualLogistics = Math.floor(remainingBudget * 0.20);
+  }
+
+  // Per plate budget
+  const perPlateBudget = Math.max(100, Math.floor(actualCatering / Math.max(guests, 1)));
+  const finalCateringTotal = perPlateBudget * guests;
 
   // Curated catering option
   const cateringOption = {
     title: perPlateBudget > 400 ? "Gourmet Live Counters & Premium Buffet" : "Artisanal Celebration Spread & High-Tea Bites",
     perPlateCost: perPlateBudget,
     guestCount: guests,
-    totalCateringCost: perPlateBudget * guests,
+    totalCateringCost: finalCateringTotal,
     vendorAssigned: vendorsData.find(v => v.type === "Catering")?.name || "SpiceRoute Gourmet Caterers",
     menuItems: [
       "Welcome Drink: Virgin Mojito & Mango Chilli Cooler",
@@ -40,7 +57,7 @@ router.post('/calculate', async (req, res) => {
   // Curated cake option
   const dessertOption = {
     title: `${guests > 25 ? '2.5 Kg Designer Theme Cake' : '1.5 Kg Custom Milestone Cake'} + Dessert Plinth`,
-    totalCakeCost: dessertBudget,
+    totalCakeCost: actualDessert,
     flavor: "Belgian Chocolate Truffle with Salted Caramel",
     vendorAssigned: "BakeCraft Artisan Patisserie",
     includesCakeStandPlinth: true,
@@ -49,16 +66,16 @@ router.post('/calculate', async (req, res) => {
 
   // Logistics, Invites & Escrow protection
   const logisticsOption = {
-    totalLogisticsCost: logisticsBudget,
+    totalLogisticsCost: actualLogistics,
     items: [
-      { name: "Zero-Damage Escrow Guarantee & Ops Desk", cost: Math.round(logisticsBudget * 0.45) },
-      { name: "Interactive WhatsApp RSVP & Itinerary Bot", cost: Math.round(logisticsBudget * 0.25) },
-      { name: "Next-Day Clean-Up & Breakdown Crew Add-on", cost: Math.round(logisticsBudget * 0.30) }
+      { name: "Zero-Damage Escrow Guarantee & Ops Desk", cost: Math.round(actualLogistics * 0.45) },
+      { name: "Interactive WhatsApp RSVP & Itinerary Bot", cost: Math.round(actualLogistics * 0.25) },
+      { name: "Next-Day Clean-Up & Breakdown Crew Add-on", cost: Math.round(actualLogistics * 0.30) }
     ]
   };
 
   const calculatedTotal = cateringOption.totalCateringCost + matchedDecor.basePrice + dessertOption.totalCakeCost + logisticsOption.totalLogisticsCost;
-  const savingsOrSurplus = budget - calculatedTotal;
+  const savingsOrSurplus = Math.max(0, budget - calculatedTotal);
 
   // Optional GenAI enhancement
   let aiRecommendation = null;
