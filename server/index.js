@@ -88,11 +88,15 @@ app.get('*', (req, res) => {
   });
 });
 
-const serverInstance = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 EventSphere Server listening on port ${PORT}`);
-  console.log(`📡 Health Check: http://localhost:${PORT}/health`);
-  console.log(`🌐 Local Web App: http://localhost:${PORT}`);
-});
+let serverInstance = null;
+
+if (process.env.VERCEL !== '1' && process.env.NODE_ENV !== 'test') {
+  serverInstance = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 EventSphere Server listening on port ${PORT}`);
+    console.log(`📡 Health Check: http://localhost:${PORT}/health`);
+    console.log(`🌐 Local Web App: http://localhost:${PORT}`);
+  });
+}
 
 export { serverInstance };
 export default app;
