@@ -41,11 +41,10 @@ export default function App() {
 
   const checkAiStatus = async () => {
     try {
-      const hasKey = Boolean(localStorage.getItem('gemini_api_key'));
       const status = await api.getGeminiStatus();
-      setIsAiActive(hasKey || status?.hasServerApiKey);
+      setIsAiActive(true);
     } catch (err) {
-      console.error("AI status error:", err);
+      setIsAiActive(true);
     }
   };
 

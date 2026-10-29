@@ -16,20 +16,20 @@ export default function HeroBanner({ onQuickAction, currentPin, dispatchData }) 
           
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-gradient-to-r from-rose-500/10 to-amber-500/10 border border-rose-500/30 text-xs font-semibold text-rose-300">
             <Zap className="w-3.5 h-3.5 text-rose-400 animate-pulse" />
-            <span>Uber for Last-Minute Celebrations (90–120 Min Setup)</span>
+            <span>GenAI Event Management Platform • 90-Min Express Setup</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-            Celebrate Spontaneously. <br />
+            GenAI Event Management & Express Party Setup. <br />
             <span className="bg-gradient-to-r from-rose-400 via-orange-300 to-amber-300 bg-clip-text text-transparent">
-              Honest Blueprints. Zero Paint Damage.
+              Honest Blueprints. Zero Wall Paint Damage.
             </span>
           </h1>
 
           <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-            No more waiting 48 hours or peeling apartment wall paint with cheap double-sided tape. 
-            Pre-assembled dark store kits, verified freelance gig decorators dispatched to your pin code, 
-            and escrow-protected payments released only when you verify the setup.
+            India's first GenAI-powered hyperlocal celebration engine. Pre-assembled celebration kits at metro dark stores, 
+            verified freelance gig decorators dispatched to your pin code in 90–120 minutes, 
+            and escrow-protected payments released only upon client OTP handover.
           </p>
 
           {/* Key Trust Pillars */}

@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Host
+Host: https://event-sphere-ai-eta.vercel.app
+
+# Sitemap
+Sitemap: https://event-sphere-ai-eta.vercel.app/sitemap.xml

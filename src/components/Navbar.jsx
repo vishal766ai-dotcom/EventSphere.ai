@@ -134,7 +134,7 @@ export default function Navbar({ activeTab, setActiveTab, currentPin, setCurrent
         </div>
 
         {/* Tab Navigation Navigation Bar */}
-        <div className="flex space-x-1 overflow-x-auto py-2 scrollbar-none border-t border-slate-800/80">
+        <nav aria-label="Main Navigation" className="flex space-x-1 overflow-x-auto py-2 scrollbar-none border-t border-slate-800/80">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -160,7 +160,7 @@ export default function Navbar({ activeTab, setActiveTab, currentPin, setCurrent
               </button>
             );
           })}
-        </div>
+        </nav>
 
       </div>
     </header>
