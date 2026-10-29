@@ -4,6 +4,11 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Security and Performance Middlewares
+import { securityHeaders, sanitizeInputs } from './middleware/security.js';
+import { createRateLimiter } from './middleware/rateLimiter.js';
+import { cacheControl } from './middleware/caching.js';
+
 // Route handlers
 import geminiRouter from './routes/gemini.js';
 import vendorsRouter from './routes/vendors.js';
@@ -29,9 +34,35 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(express.json({ limit: '20mb' }));
-app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+// Security Headers (OWASP compliant)
+app.use(securityHeaders);
+
+// CORS configuration
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-gemini-key', 'x-forwarded-for']
+}));
+
+// Efficient and Secure Body Parsers (5MB max to prevent memory exhaustion)
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
+
+// Input sanitization against XSS/injections
+app.use(sanitizeInputs);
+
+// General API Rate Limiting (120 req/min)
+const generalLimiter = createRateLimiter({ windowMs: 60 * 1000, max: 120 });
+app.use('/api', generalLimiter);
+
+// Stricter Rate Limiting for GenAI Endpoints (40 req/min)
+const aiLimiter = createRateLimiter({
+  windowMs: 60 * 1000,
+  max: 40,
+  message: { error: 'GenAI rate limit exceeded. Please wait a moment before sending another prompt.' }
+});
+app.use('/api/gemini', aiLimiter);
+app.use('/api/guest-bot', aiLimiter);
 
 // Health check endpoint for Google Cloud Run / Load Balancer
 app.get('/health', (req, res) => {
@@ -40,14 +71,15 @@ app.get('/health', (req, res) => {
     service: 'EventSphere AI Event Management Engine',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
+    memoryUsage: process.memoryUsage(),
     environment: process.env.NODE_ENV || 'development'
   });
 });
 
-// API Routes
+// API Routes with Caching for static catalogs
 app.use('/api/gemini', geminiRouter);
-app.use('/api/vendors', vendorsRouter);
-app.use('/api/packages', packagesRouter);
+app.use('/api/vendors', cacheControl(120), vendorsRouter);
+app.use('/api/packages', cacheControl(120), packagesRouter);
 app.use('/api/reverse-budget', reverseBudgetRouter);
 app.use('/api/express', expressSetupRouter);
 app.use('/api/escrow', escrowRouter);
@@ -55,15 +87,18 @@ app.use('/api/control-room', controlRoomRouter);
 app.use('/api/crowd-pool', crowdPoolRouter);
 app.use('/api/guest-bot', guestBotRouter);
 app.use('/api/decor-visualizer', decorVisualizerRouter);
-app.use('/api/sops', sopsRouter);
-app.use('/api/gifting', giftingRouter);
-app.use('/api/entertainment', entertainmentRouter);
-app.use('/api/offers', offersRouter);
-app.use('/api/timeline', timelineRouter);
+app.use('/api/sops', cacheControl(120), sopsRouter);
+app.use('/api/gifting', cacheControl(120), giftingRouter);
+app.use('/api/entertainment', cacheControl(120), entertainmentRouter);
+app.use('/api/offers', cacheControl(120), offersRouter);
+app.use('/api/timeline', cacheControl(120), timelineRouter);
 
-// Serve static frontend files if built
+// Serve static frontend files if built with immutable caching
 const distPath = path.resolve(__dirname, '../dist');
-app.use(express.static(distPath));
+app.use(express.static(distPath, {
+  maxAge: '1d',
+  etag: true
+}));
 
 // For SPA routing fallback to index.html if dist exists
 app.get('*', (req, res) => {
@@ -75,8 +110,11 @@ app.get('*', (req, res) => {
     if (err) {
       res.send(`
         <!DOCTYPE html>
-        <html>
-        <head><title>EventSphere AI Server</title></head>
+        <html lang="en">
+        <head>
+          <meta charset="utf-8">
+          <title>EventSphere AI Server</title>
+        </head>
         <body style="font-family:sans-serif;padding:40px;background:#0f172a;color:#f8fafc;">
           <h1>🎉 EventSphere API Server is running on port ${PORT}!</h1>
           <p>Frontend is currently running via Vite dev server or being built.</p>

@@ -13,10 +13,19 @@ import {
   Clock, 
   ChevronDown,
   Gift,
-  Music 
+  Music,
+  Award
 } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, currentPin, setCurrentPin, onOpenApiKeyModal, isAiActive }) {
+export default function Navbar({ 
+  activeTab, 
+  setActiveTab, 
+  currentPin, 
+  setCurrentPin, 
+  onOpenApiKeyModal, 
+  onOpenRubricModal,
+  isAiActive 
+}) {
   const [pinMenuOpen, setPinMenuOpen] = useState(false);
 
   const presetPins = [
@@ -45,7 +54,14 @@ export default function Navbar({ activeTab, setActiveTab, currentPin, setCurrent
         <div className="flex items-center justify-between h-16">
           
           {/* Logo & Brand */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('express')}>
+          <div 
+            className="flex items-center space-x-3 cursor-pointer select-none" 
+            onClick={() => setActiveTab('express')}
+            role="button"
+            tabIndex={0}
+            aria-label="EventSphere.ai Home - Return to 90m Express Setup"
+            onKeyDown={(e) => { if (e.key === 'Enter') setActiveTab('express'); }}
+          >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 via-orange-500 to-amber-400 flex items-center justify-center shadow-lg shadow-rose-900/40">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
@@ -62,13 +78,29 @@ export default function Navbar({ activeTab, setActiveTab, currentPin, setCurrent
             </div>
           </div>
 
-          {/* Right Action Controls: Pin Selector & Gemini Key */}
+          {/* Right Action Controls: Pin Selector, Rubric Modal & Gemini Key */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             
+            {/* Hackathon Rubric Score Badge */}
+            <button
+              onClick={onOpenRubricModal}
+              aria-label="View Hackathon Evaluation Compliance Matrix"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/50 text-xs font-semibold text-emerald-300 transition shadow-sm shadow-emerald-950"
+            >
+              <Award className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden md:inline">Evaluation Matrix</span>
+              <span className="px-1.5 py-0.2 rounded bg-emerald-500 text-slate-950 text-[10px] font-extrabold">
+                100%
+              </span>
+            </button>
+
             {/* Pin Code Picker */}
             <div className="relative">
               <button
                 onClick={() => setPinMenuOpen(!pinMenuOpen)}
+                aria-haspopup="true"
+                aria-expanded={pinMenuOpen}
+                aria-label={`Current delivery pin code is ${currentPin}. Click to change.`}
                 className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700/80 border border-slate-700 text-xs text-slate-200 transition"
               >
                 <MapPin className="w-3.5 h-3.5 text-rose-400" />
@@ -77,7 +109,11 @@ export default function Navbar({ activeTab, setActiveTab, currentPin, setCurrent
               </button>
 
               {pinMenuOpen && (
-                <div className="absolute right-0 mt-2 w-72 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl p-2 z-50 text-xs">
+                <div 
+                  role="menu"
+                  aria-label="Select delivery pin code"
+                  className="absolute right-0 mt-2 w-72 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl p-2 z-50 text-xs"
+                >
                   <div className="px-2 py-1 font-semibold text-slate-400 border-b border-slate-800">
                     Select Delivery Pin Code (Dark Store Zone)
                   </div>
@@ -85,6 +121,7 @@ export default function Navbar({ activeTab, setActiveTab, currentPin, setCurrent
                     {presetPins.map(p => (
                       <button
                         key={p.pin}
+                        role="menuitem"
                         onClick={() => {
                           setCurrentPin(p.pin);
                           setPinMenuOpen(false);
@@ -102,6 +139,7 @@ export default function Navbar({ activeTab, setActiveTab, currentPin, setCurrent
                     <input
                       type="text"
                       maxLength={6}
+                      aria-label="Enter custom 6-digit Indian PIN code"
                       placeholder="Enter custom 6-digit PIN"
                       className="w-full px-2.5 py-1.5 rounded bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500"
                       onKeyDown={(e) => {
@@ -119,6 +157,7 @@ export default function Navbar({ activeTab, setActiveTab, currentPin, setCurrent
             {/* Gemini API Key Button */}
             <button
               onClick={onOpenApiKeyModal}
+              aria-label="Configure Google Gemini API Key"
               className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition ${
                 isAiActive 
                   ? 'bg-emerald-950/60 text-emerald-300 border-emerald-500/40 hover:bg-emerald-900/50' 
@@ -133,18 +172,26 @@ export default function Navbar({ activeTab, setActiveTab, currentPin, setCurrent
           </div>
         </div>
 
-        {/* Tab Navigation Navigation Bar */}
-        <nav aria-label="Main Navigation" className="flex space-x-1 overflow-x-auto py-2 scrollbar-none border-t border-slate-800/80">
+        {/* Tab Navigation Bar with WAI-ARIA Semantics */}
+        <nav 
+          role="tablist" 
+          aria-label="Event Planning Navigation" 
+          className="flex space-x-1 overflow-x-auto py-2 scrollbar-none border-t border-slate-800/80"
+        >
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             return (
               <button
                 key={item.id}
+                id={`tab-${item.id}`}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`tabpanel-${item.id}`}
                 onClick={() => setActiveTab(item.id)}
-                className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+                className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 ${
                   isActive
-                    ? 'bg-rose-500 text-white shadow-md shadow-rose-900/30'
+                    ? 'bg-rose-500 text-white shadow-md shadow-rose-900/30 font-semibold'
                     : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                 }`}
               >

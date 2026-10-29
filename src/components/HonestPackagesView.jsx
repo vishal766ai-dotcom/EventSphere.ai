@@ -196,7 +196,9 @@ export default function HonestPackagesView({ onBookPackage }) {
                       <div className="my-2 h-56 flex items-center justify-center rounded-xl bg-slate-900/60 border border-sky-500/20 p-2 overflow-hidden">
                         <img 
                           src={pkg.blueprint.blueprintSketch} 
-                          alt="Blueprint Sketch"
+                          alt={`Architectural blueprint CAD diagram for ${pkg.title}`}
+                          loading="lazy"
+                          decoding="async"
                           className="max-h-full max-w-full object-contain filter drop-shadow" 
                         />
                       </div>
@@ -241,7 +243,9 @@ export default function HonestPackagesView({ onBookPackage }) {
                       <div className="my-2 h-56 rounded-xl overflow-hidden relative border border-slate-800 group">
                         <img 
                           src={pkg.honestPhoto.imageUrl} 
-                          alt="Real apartment photo"
+                          alt={`Unedited photo of ${pkg.title} in real apartment living room`}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex flex-col justify-end p-3">
