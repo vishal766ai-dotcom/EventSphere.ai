@@ -45,7 +45,7 @@ router.post('/analyze-fitting', async (req, res) => {
   const pkg = packagesData.find(p => p.id === selectedPackageId) || packagesData[0];
 
   let aiAdvice = null;
-  if (userApiKey) {
+  if (userApiKey && process.env.NODE_ENV !== 'test') {
     try {
       const genAI = new GoogleGenerativeAI(userApiKey);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -61,7 +61,9 @@ Keep concise in 3 bullet points with emojis.`;
       const result = await model.generateContent(prompt);
       aiAdvice = result.response.text();
     } catch (err) {
-      console.warn("Decor visualizer Gemini call fallback:", err.message);
+      if (process.env.NODE_ENV !== 'test') {
+        console.warn("Decor visualizer Gemini call fallback active.");
+      }
     }
   }
 

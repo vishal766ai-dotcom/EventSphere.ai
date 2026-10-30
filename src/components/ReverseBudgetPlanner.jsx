@@ -78,14 +78,19 @@ export default function ReverseBudgetPlanner({ currentPin, onSelectPlan }) {
         {/* Guest Count */}
         <div className="space-y-2">
           <div className="flex justify-between text-xs">
-            <span className="font-semibold text-slate-300">Guest Count</span>
+            <label htmlFor="guest-count-slider" className="font-semibold text-slate-300">Guest Count</label>
             <span className="font-mono font-bold text-rose-400">{guestCount} People</span>
           </div>
           <input
+            id="guest-count-slider"
             type="range"
             min="10"
             max="120"
             step="5"
+            aria-label="Guest Count"
+            aria-valuemin="10"
+            aria-valuemax="120"
+            aria-valuenow={guestCount}
             value={guestCount}
             onChange={(e) => setGuestCount(Number(e.target.value))}
             className="w-full accent-rose-500 bg-slate-950 rounded-lg cursor-pointer"
@@ -99,8 +104,10 @@ export default function ReverseBudgetPlanner({ currentPin, onSelectPlan }) {
 
         {/* Event Type */}
         <div className="space-y-2">
-          <label className="font-semibold text-slate-300 text-xs block">Event Milestone</label>
+          <label htmlFor="event-milestone-select" className="font-semibold text-slate-300 text-xs block">Event Milestone</label>
           <select
+            id="event-milestone-select"
+            aria-label="Event Milestone Category"
             value={eventType}
             onChange={(e) => setEventType(e.target.value)}
             className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-rose-500"
@@ -112,14 +119,15 @@ export default function ReverseBudgetPlanner({ currentPin, onSelectPlan }) {
         {/* Hard Budget Cap */}
         <div className="space-y-2">
           <div className="flex justify-between text-xs">
-            <span className="font-semibold text-slate-300">Total Budget Cap</span>
+            <label htmlFor="custom-budget-input" className="font-semibold text-slate-300">Total Budget Cap</label>
             <span className="font-mono font-bold text-emerald-400">₹{totalBudget.toLocaleString('en-IN')}</span>
           </div>
-          <div className="flex space-x-1.5">
+          <div className="flex space-x-1.5" role="group" aria-label="Quick Budget Presets">
             {quickBudgetPresets.map(b => (
               <button
                 key={b}
                 onClick={() => setTotalBudget(b)}
+                aria-label={`Set budget to ₹${b.toLocaleString('en-IN')}`}
                 className={`flex-1 py-1 px-1.5 rounded-lg text-[11px] font-mono transition ${
                   totalBudget === b 
                     ? 'bg-rose-500 text-white font-bold' 
@@ -131,10 +139,12 @@ export default function ReverseBudgetPlanner({ currentPin, onSelectPlan }) {
             ))}
           </div>
           <input
+            id="custom-budget-input"
             type="number"
             min="10000"
             max="200000"
             step="1000"
+            aria-label="Custom Budget in Indian Rupees"
             value={totalBudget}
             onChange={(e) => setTotalBudget(Number(e.target.value))}
             className="w-full px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white font-mono focus:outline-none focus:border-rose-500"

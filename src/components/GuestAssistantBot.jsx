@@ -128,6 +128,9 @@ export default function GuestAssistantBot() {
 
       {/* Messages Chat Area */}
       <div 
+        role="log"
+        aria-live="polite"
+        aria-label="WhatsApp Chat History"
         className="flex-1 p-4 overflow-y-auto space-y-3 bg-[#0b141a]"
         style={{
           backgroundImage: "radial-gradient(#1e293b 0.75px, transparent 0.75px)",
@@ -175,9 +178,12 @@ export default function GuestAssistantBot() {
       </div>
 
       {/* Input Bar */}
-      <div className="p-3 bg-[#202c33] border-t border-slate-700/60 flex items-center space-x-2">
+      <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="p-3 bg-[#202c33] border-t border-slate-700/60 flex items-center space-x-2">
+        <label htmlFor="guest-chat-input" className="sr-only">Ask celebration concierge question</label>
         <input
+          id="guest-chat-input"
           type="text"
+          aria-label="Ask celebration concierge a question"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={(e) => {
@@ -191,13 +197,14 @@ export default function GuestAssistantBot() {
         />
 
         <button
-          onClick={() => handleSendMessage()}
+          type="submit"
+          aria-label="Send message to concierge"
           disabled={!inputText.trim()}
           className="w-10 h-10 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center shadow-lg transition disabled:opacity-40"
         >
           <Send className="w-4 h-4" />
         </button>
-      </div>
+      </form>
 
     </div>
   );

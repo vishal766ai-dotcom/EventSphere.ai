@@ -23,8 +23,8 @@ export function createRateLimiter(options = {}) {
   }, 120000).unref();
 
   return (req, res, next) => {
-    // In test environment, bypass rate limiter
-    if (process.env.NODE_ENV === 'test') {
+    // In test environment, bypass rate limiter unless explicitly testing rate limits
+    if (process.env.NODE_ENV === 'test' && !options.enforceInTest) {
       return next();
     }
 

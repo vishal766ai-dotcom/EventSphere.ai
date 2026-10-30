@@ -8,6 +8,8 @@ import { fileURLToPath } from 'url';
 import { securityHeaders, sanitizeInputs } from './middleware/security.js';
 import { createRateLimiter } from './middleware/rateLimiter.js';
 import { cacheControl } from './middleware/caching.js';
+import { auditLogger } from './middleware/auditLog.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 // Route handlers
 import geminiRouter from './routes/gemini.js';
@@ -36,6 +38,9 @@ const PORT = process.env.PORT || 5000;
 
 // Security Headers (OWASP compliant)
 app.use(securityHeaders);
+
+// Security & Performance Audit Logging
+app.use(auditLogger);
 
 // CORS configuration
 app.use(cors({
@@ -92,6 +97,9 @@ app.use('/api/gifting', cacheControl(120), giftingRouter);
 app.use('/api/entertainment', cacheControl(120), entertainmentRouter);
 app.use('/api/offers', cacheControl(120), offersRouter);
 app.use('/api/timeline', cacheControl(120), timelineRouter);
+
+// Centralized API Error Handler
+app.use('/api', errorHandler);
 
 // Serve static frontend files if built with immutable caching
 const distPath = path.resolve(__dirname, '../dist');

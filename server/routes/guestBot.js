@@ -24,7 +24,7 @@ router.post('/query', async (req, res) => {
   }
 
   // If Gemini is available, answer with high-level conversational flair
-  if (userApiKey) {
+  if (userApiKey && process.env.NODE_ENV !== 'test') {
     try {
       const genAI = new GoogleGenerativeAI(userApiKey);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -47,7 +47,9 @@ Reply warmly in 2-3 short, clear sentences like a friendly WhatsApp assistant. U
         source: "Gemini 1.5 Flash"
       });
     } catch (err) {
-      console.warn("Guest bot Gemini call fallback:", err.message);
+      if (process.env.NODE_ENV !== 'test') {
+        console.warn("Guest bot Gemini call fallback active.");
+      }
     }
   }
 

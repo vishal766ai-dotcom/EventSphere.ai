@@ -213,10 +213,12 @@ export default function ExpressPartyLauncher({ currentPin, onOrderCreated }) {
             {!activeOrder ? (
               <form onSubmit={handleLaunchParty} className="space-y-3.5 text-xs">
                 <div>
-                  <label className="text-slate-400 font-medium block mb-1">Host Name</label>
+                  <label htmlFor="host-name-input" className="text-slate-400 font-medium block mb-1">Host Name</label>
                   <input
+                    id="host-name-input"
                     type="text"
                     required
+                    aria-required="true"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none focus:border-rose-500"
@@ -224,10 +226,12 @@ export default function ExpressPartyLauncher({ currentPin, onOrderCreated }) {
                 </div>
 
                 <div>
-                  <label className="text-slate-400 font-medium block mb-1">Host WhatsApp / Mobile</label>
+                  <label htmlFor="host-phone-input" className="text-slate-400 font-medium block mb-1">Host WhatsApp / Mobile</label>
                   <input
+                    id="host-phone-input"
                     type="tel"
                     required
+                    aria-required="true"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono focus:outline-none focus:border-rose-500"
@@ -235,10 +239,12 @@ export default function ExpressPartyLauncher({ currentPin, onOrderCreated }) {
                 </div>
 
                 <div>
-                  <label className="text-slate-400 font-medium block mb-1">Delivery Apartment / Venue Address</label>
+                  <label htmlFor="host-address-input" className="text-slate-400 font-medium block mb-1">Delivery Apartment / Venue Address</label>
                   <textarea
+                    id="host-address-input"
                     rows={2}
                     required
+                    aria-required="true"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder="Flat number, building name, landmark..."
@@ -248,10 +254,12 @@ export default function ExpressPartyLauncher({ currentPin, onOrderCreated }) {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-slate-400 font-medium block mb-1">Pin Code</label>
+                    <label htmlFor="host-pin-input" className="text-slate-400 font-medium block mb-1">Pin Code</label>
                     <input
+                      id="host-pin-input"
                       type="text"
                       maxLength={6}
+                      aria-label="6-digit Delivery Pin Code"
                       value={pinCode}
                       onChange={(e) => {
                         setPinCode(e.target.value);
@@ -261,7 +269,7 @@ export default function ExpressPartyLauncher({ currentPin, onOrderCreated }) {
                     />
                   </div>
                   <div>
-                    <label className="text-slate-400 font-medium block mb-1">Setup Window</label>
+                    <span className="text-slate-400 font-medium block mb-1">Setup Window</span>
                     <div className="px-3 py-2 rounded-xl bg-slate-800 text-amber-300 font-bold text-center">
                       ⚡ Next 90 Mins
                     </div>
@@ -269,7 +277,7 @@ export default function ExpressPartyLauncher({ currentPin, onOrderCreated }) {
                 </div>
 
                 {/* Price Breakdown */}
-                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2 pt-3">
+                <div aria-live="polite" className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2 pt-3">
                   <div className="flex justify-between text-slate-300">
                     <span>{selectedPkg?.title}</span>
                     <span className="font-mono">₹{selectedPkg?.expressPrice?.toLocaleString('en-IN')}</span>

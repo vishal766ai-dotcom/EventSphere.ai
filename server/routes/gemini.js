@@ -46,7 +46,7 @@ router.post('/generate', async (req, res) => {
 
   const model = getGeminiModel(userApiKey);
 
-  if (model) {
+  if (model && process.env.NODE_ENV !== 'test') {
     try {
       const fullPrompt = systemInstruction ? `${systemInstruction}\n\nTask:\n${prompt}` : prompt;
       const result = await model.generateContent(fullPrompt);
@@ -57,7 +57,9 @@ router.post('/generate', async (req, res) => {
         content: text
       });
     } catch (err) {
-      console.warn("Gemini API call failed, falling back to intelligent domain engine:", err.message);
+      if (process.env.NODE_ENV !== 'test') {
+        console.warn("Gemini API call fallback to domain engine active.");
+      }
     }
   }
 

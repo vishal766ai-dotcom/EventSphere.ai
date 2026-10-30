@@ -48,6 +48,27 @@ export default function Navbar({
     { id: 'ops-escrow', label: 'Escrow & Ops Desk', icon: ShieldCheck, badge: 'Verified' },
   ];
 
+  const handleTabKeyDown = (e, index) => {
+    let targetIndex = -1;
+    if (e.key === 'ArrowRight') {
+      targetIndex = (index + 1) % navItems.length;
+    } else if (e.key === 'ArrowLeft') {
+      targetIndex = (index - 1 + navItems.length) % navItems.length;
+    } else if (e.key === 'Home') {
+      targetIndex = 0;
+    } else if (e.key === 'End') {
+      targetIndex = navItems.length - 1;
+    }
+
+    if (targetIndex !== -1) {
+      e.preventDefault();
+      const nextTab = navItems[targetIndex];
+      setActiveTab(nextTab.id);
+      const nextBtn = document.getElementById(`tab-${nextTab.id}`);
+      if (nextBtn) nextBtn.focus();
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 glass-panel border-b border-slate-800 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -178,7 +199,7 @@ export default function Navbar({
           aria-label="Event Planning Navigation" 
           className="flex space-x-1 overflow-x-auto py-2 scrollbar-none border-t border-slate-800/80"
         >
-          {navItems.map((item) => {
+          {navItems.map((item, idx) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             return (
@@ -188,7 +209,9 @@ export default function Navbar({
                 role="tab"
                 aria-selected={isActive}
                 aria-controls={`tabpanel-${item.id}`}
+                tabIndex={isActive ? 0 : -1}
                 onClick={() => setActiveTab(item.id)}
+                onKeyDown={(e) => handleTabKeyDown(e, idx)}
                 className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 ${
                   isActive
                     ? 'bg-rose-500 text-white shadow-md shadow-rose-900/30 font-semibold'

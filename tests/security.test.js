@@ -49,7 +49,7 @@ runTest("sanitizeInputs middleware removes <script> and dangerous protocols", ()
 
 // Test 3: Rate Limiter enforcement
 runTest("createRateLimiter limits rapid requests exceeding threshold", () => {
-  const limiter = createRateLimiter({ windowMs: 1000, max: 2 });
+  const limiter = createRateLimiter({ windowMs: 1000, max: 2, enforceInTest: true });
   const mockReq = { headers: {}, socket: { remoteAddress: '192.168.1.100' } };
   
   let lastStatus = 200;

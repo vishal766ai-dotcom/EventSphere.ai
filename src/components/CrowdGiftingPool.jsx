@@ -144,7 +144,14 @@ export default function CrowdGiftingPool() {
                 <span className="text-emerald-400 font-mono">{pool.progressPercent}% Funded</span>
               </div>
 
-              <div className="h-4 w-full rounded-full bg-slate-950 border border-slate-800 p-0.5 overflow-hidden">
+              <div 
+                role="progressbar"
+                aria-valuenow={pool.progressPercent}
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-label={`Crowd pool funding progress: ${pool.progressPercent}% of ₹${pool.targetAmount.toLocaleString('en-IN')}`}
+                className="h-4 w-full rounded-full bg-slate-950 border border-slate-800 p-0.5 overflow-hidden"
+              >
                 <div 
                   className="h-full rounded-full bg-gradient-to-r from-pink-500 via-rose-500 to-amber-400 transition-all duration-700 shadow-lg shadow-pink-500/50"
                   style={{ width: `${Math.min(100, pool.progressPercent)}%` }}
@@ -228,10 +235,12 @@ export default function CrowdGiftingPool() {
 
             <form onSubmit={handleContribute} className="space-y-3.5 text-xs">
               <div>
-                <label className="text-slate-400 font-medium block mb-1">Your Name</label>
+                <label htmlFor="contributor-name-input" className="text-slate-400 font-medium block mb-1">Your Name</label>
                 <input
+                  id="contributor-name-input"
                   type="text"
                   required
+                  aria-required="true"
                   placeholder="e.g. Rahul Sharma"
                   value={contributorName}
                   onChange={(e) => setContributorName(e.target.value)}
@@ -240,11 +249,13 @@ export default function CrowdGiftingPool() {
               </div>
 
               <div>
-                <label className="text-slate-400 font-medium block mb-1">Contribution Amount (₹)</label>
+                <label htmlFor="contribution-amount-input" className="text-slate-400 font-medium block mb-1">Contribution Amount (₹)</label>
                 <input
+                  id="contribution-amount-input"
                   type="number"
                   min="100"
                   required
+                  aria-required="true"
                   value={amount}
                   onChange={(e) => setAmount(Number(e.target.value))}
                   className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono focus:outline-none focus:border-rose-500"
@@ -252,8 +263,9 @@ export default function CrowdGiftingPool() {
               </div>
 
               <div>
-                <label className="text-slate-400 font-medium block mb-1">Cheer Message / Note</label>
+                <label htmlFor="contribution-note-input" className="text-slate-400 font-medium block mb-1">Cheer Message / Note</label>
                 <input
+                  id="contribution-note-input"
                   type="text"
                   placeholder="e.g. Can't wait for DJ night! 🕺"
                   value={note}

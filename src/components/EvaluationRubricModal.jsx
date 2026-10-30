@@ -7,23 +7,24 @@ import {
   Zap, 
   Scale, 
   Smartphone, 
-  Cpu, 
   Layers, 
   Clock, 
   Truck, 
-  FileText,
-  Lock,
-  Sparkles,
-  Users
+  FileText, 
+  Lock, 
+  Sparkles, 
+  Users,
+  ArrowRight
 } from 'lucide-react';
 
-export default function EvaluationRubricModal({ isOpen, onClose }) {
+export default function EvaluationRubricModal({ isOpen, onClose, onNavigateTab }) {
   if (!isOpen) return null;
 
   const criteria = [
     {
       title: "Aggregated Gig / Partner Networks",
-      icon: UsersIcon,
+      icon: Users,
+      tabId: "ops-escrow",
       status: "100% Implemented",
       desc: "Verified local freelance decorators, caterers, bakers & sound technicians across metro postal codes with zero permanent platform payroll overhead.",
       metric: "Dynamic vendor dispatch across 4 major zones",
@@ -32,6 +33,7 @@ export default function EvaluationRubricModal({ isOpen, onClose }) {
     {
       title: "Standardized Blueprints (SOPs) & Zero-Damage",
       icon: Layers,
+      tabId: "packages",
       status: "100% Implemented",
       desc: "Exact CAD dimensions, height/width wall clearances, freestanding silicone-padded metal frames, and ₹2,000 paint-damage protection warranty.",
       metric: "Guaranteed Zero-Damage SOP #ZERO-DAMAGE-2026",
@@ -40,6 +42,7 @@ export default function EvaluationRubricModal({ isOpen, onClose }) {
     {
       title: "Location-Based Automated Dispatch (90-120 Min)",
       icon: Zap,
+      tabId: "express",
       status: "100% Implemented",
       desc: "Hyperlocal 'Uber for Celebrations' engine routing pre-staged standardized dark-store celebration kits to nearest gig partners by PIN code.",
       metric: "90-Min express SLA guarantee",
@@ -48,6 +51,7 @@ export default function EvaluationRubricModal({ isOpen, onClose }) {
     {
       title: "Milestone & Photo Verification with Smart Escrow",
       icon: Lock,
+      tabId: "ops-escrow",
       status: "100% Implemented",
       desc: "Partner check-in timestamps and setup photos submitted before client handover; funds held in escrow until 4-digit client OTP confirmation.",
       metric: "Cryptographic 4-digit OTP handover protocol",
@@ -56,6 +60,7 @@ export default function EvaluationRubricModal({ isOpen, onClose }) {
     {
       title: "Transparent Dynamic Budget-to-Event Builder",
       icon: Scale,
+      tabId: "budget",
       status: "100% Implemented",
       desc: "Algorithmic 50% catering, 20% decor, 15% cake/dessert, and 15% logistics/invites strict cap generator without quote negotiations.",
       metric: "Strict budget enforcement with 0 overage",
@@ -64,6 +69,7 @@ export default function EvaluationRubricModal({ isOpen, onClose }) {
     {
       title: "Interactive Live Event Control Room & WhatsApp Bot",
       icon: Smartphone,
+      tabId: "control-room",
       status: "100% Implemented",
       desc: "Simulated GPS fleet radar tracking vendor arrival times + 1-click automated WhatsApp guest broadcast alerts and Gemini conversational concierge.",
       metric: "Day-of telematics radar & conversational AI",
@@ -71,7 +77,8 @@ export default function EvaluationRubricModal({ isOpen, onClose }) {
     },
     {
       title: "Crowd-Gifting & Shared Event UPI Pooling",
-      icon: UsersIcon,
+      icon: Users,
+      tabId: "crowd-pool",
       status: "100% Implemented",
       desc: "Shared UPI contribution link allowing friends/family to pool money for farewells or milestones, auto-dispatching at 100% funding threshold.",
       metric: "Real-time contribution ledger & progress bar",
@@ -80,6 +87,7 @@ export default function EvaluationRubricModal({ isOpen, onClose }) {
     {
       title: "Pencil Sketch & Real Photo Honest Split Cards",
       icon: FileText,
+      tabId: "packages",
       status: "100% Implemented",
       desc: "Radical transparency: side-by-side comparison of CAD architectural blueprints versus unedited photos from genuine Indian apartment living rooms.",
       metric: "Zero-filter honest customer trust cards",
@@ -88,6 +96,7 @@ export default function EvaluationRubricModal({ isOpen, onClose }) {
     {
       title: "Upload Your Living Room — AI Photo Fitting",
       icon: Sparkles,
+      tabId: "visualizer",
       status: "100% Implemented",
       desc: "Google Gemini 1.5 Flash spatial assessment + HTML5 Canvas overlay for testing scale, wall color contrast, and furniture clearance.",
       metric: "Instant 5-second room composite fitting",
@@ -96,6 +105,7 @@ export default function EvaluationRubricModal({ isOpen, onClose }) {
     {
       title: "Post-Party Next-Day Clean-Up Crew Add-On",
       icon: Truck,
+      tabId: "express",
       status: "100% Implemented",
       desc: "₹499 breakdown assistant arrives at 9:30 AM to dismantle metal frames, pop balloons, and separate compostable florals.",
       metric: "Zero-hangover next-day venue restoration",
@@ -104,16 +114,13 @@ export default function EvaluationRubricModal({ isOpen, onClose }) {
     {
       title: "Multi-Generational Return Gifting & Spatial Plan",
       icon: Award,
+      tabId: "gifts",
       status: "100% Implemented",
       desc: "All-ages return gifts (Kids, Teens, Adults, Seniors), 4-step procurement SOP, hour-by-hour Run of Show timeline, and 6 apartment acoustic zones.",
       metric: "Full celebration lifecycle management",
       codeRef: "src/components/GuestGiftingHub.jsx"
     }
   ];
-
-  function UsersIcon(props) {
-    return <Users className={props.className} />;
-  }
 
   return (
     <div 
@@ -183,7 +190,18 @@ export default function EvaluationRubricModal({ isOpen, onClose }) {
 
                   <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px]">
                     <span className="text-slate-500 font-mono">{item.codeRef}</span>
-                    <span className="font-semibold text-rose-300">{item.metric}</span>
+                    {onNavigateTab && (
+                      <button
+                        onClick={() => {
+                          onNavigateTab(item.tabId);
+                          onClose();
+                        }}
+                        className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white font-semibold transition border border-rose-500/30"
+                      >
+                        <span>Test Feature</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    )}
                   </div>
                 </div>
               );

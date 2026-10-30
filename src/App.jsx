@@ -209,6 +209,7 @@ export default function App() {
         <EvaluationRubricModal
           isOpen={isRubricModalOpen}
           onClose={() => setIsRubricModalOpen(false)}
+          onNavigateTab={handleQuickAction}
         />
 
         {/* Footer */}

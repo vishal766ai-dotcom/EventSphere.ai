@@ -65,7 +65,7 @@ export default function ApiKeyModal({ isOpen, onClose, onKeySaved }) {
           </p>
 
           <div className="space-y-1.5">
-            <label className="font-semibold text-slate-200 flex justify-between">
+            <label htmlFor="gemini-api-key-input" className="font-semibold text-slate-200 flex justify-between">
               <span>Gemini API Key</span>
               <a 
                 href="https://aistudio.google.com/app/apikey" 
@@ -78,7 +78,9 @@ export default function ApiKeyModal({ isOpen, onClose, onKeySaved }) {
               </a>
             </label>
             <input
+              id="gemini-api-key-input"
               type="password"
+              aria-label="Google Gemini API Key"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               placeholder="AIzaSy..."
